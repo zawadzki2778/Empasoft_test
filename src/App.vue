@@ -1,30 +1,13 @@
 <template>
   <div id="app">
-    <InputForm />
+    <router-view/>
   </div>
 </template>
 
 <script>
-import InputForm from "@/components/InputForm.vue"
 export default {
   name: "App",
-  components: { InputForm },
-  data() {
-    return {
-      username: "",
-      password: "",
-    };
-  },
-  computed: {
-    nameState() {
-      return this.username.length > 2 ? true : false;
-    },
-  },
-  methods: {
-    openTable() {
-
-    }
-  }
+  components: { },
 };
 </script>
 
