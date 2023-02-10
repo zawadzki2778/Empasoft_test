@@ -1,19 +1,31 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <InputForm />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import InputForm from "@/components/InputForm.vue"
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  name: "App",
+  components: { InputForm },
+  data() {
+    return {
+      username: "",
+      password: "",
+    };
+  },
+  computed: {
+    nameState() {
+      return this.username.length > 2 ? true : false;
+    },
+  },
+  methods: {
+    openTable() {
+
+    }
   }
-}
+};
 </script>
 
 <style>
