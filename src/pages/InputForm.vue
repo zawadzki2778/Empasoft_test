@@ -38,9 +38,7 @@ export default {
   },
   methods: {
     openTable() {
-      
       return this.$router.push({ name: "UserTable" });
-
     },
   },
 };
