@@ -1,7 +1,8 @@
 <template>
   <b-container fluid>
     <!-- User Interface controls -->
-    <b-row>
+    <h3>Список пользователей с фильтрацией по Username и сортировкой по ID</h3>
+    <b-row class="p-3">
       <b-col lg="6" class="my-1">
         <b-form-group
           label="Sort"
@@ -32,8 +33,8 @@
               size="sm"
               class="w-25"
             > -->
-              <!-- <option :value="false">Asc</option> -->
-              <!-- <option :value="true">Desc</option> -->
+            <!-- <option :value="false">Asc</option> -->
+            <!-- <option :value="true">Desc</option> -->
             <!-- </b-form-select> -->
           </b-input-group>
         </b-form-group>
@@ -68,6 +69,7 @@
         >
           <b-input-group size="sm">
             <b-form-input
+              class="mr-3"
               id="filter-input"
               v-model="filter"
               type="search"
@@ -75,7 +77,10 @@
             ></b-form-input>
 
             <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''"
+              <b-button
+                :disabled="!filter"
+                @click="filter = ''"
+                variant="outline-primary"
                 >Clear</b-button
               >
             </b-input-group-append>
@@ -125,7 +130,7 @@
           
         </b-form-group>
       </b-col> -->
-<!--:options="pageOptions" убрал --> 
+      <!--:options="pageOptions" убрал -->
       <!-- <b-col sm="7" md="6" class="my-1">
         <b-pagination
           v-model="currentPage"
@@ -277,15 +282,10 @@ export default {
       );
       try {
         this.items = await response.json();
-        console.log(this.items);
-
-        alert("ALL OK!");
       } catch (errors) {
         this.errors = await response.json();
-        console.log(this.errors);
       }
     },
-
     info(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
       this.infoModal.content = JSON.stringify(item, null, 2);
@@ -303,3 +303,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.container-fluid {
+  width: 75%;
+  background-color:  rgb(241, 241, 241);;
+  padding-bottom: 5px;
+}
+.table {
+  margin-top: 40px;
+  background-color: white;
+}
+</style>
