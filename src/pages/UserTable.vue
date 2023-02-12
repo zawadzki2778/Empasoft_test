@@ -25,21 +25,21 @@
               </template>
             </b-form-select>
 
-            <b-form-select
+            <!-- <b-form-select
               v-model="sortDesc"
               :disabled="!sortBy"
               :aria-describedby="ariaDescribedby"
               size="sm"
               class="w-25"
-            >
-              <option :value="false">Asc</option>
-              <option :value="true">Desc</option>
-            </b-form-select>
+            > -->
+              <!-- <option :value="false">Asc</option> -->
+              <!-- <option :value="true">Desc</option> -->
+            <!-- </b-form-select> -->
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col lg="6" class="my-1">
+      <!-- <b-col lg="6" class="my-1">
         <b-form-group
           label="Initial sort"
           label-for="initial-sort-select"
@@ -55,7 +55,7 @@
             size="sm"
           ></b-form-select>
         </b-form-group>
-      </b-col>
+      </b-col> -->
 
       <b-col lg="6" class="my-1">
         <b-form-group
@@ -83,7 +83,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col lg="6" class="my-1">
+      <!-- <b-col lg="6" class="my-1">
         <b-form-group
           v-model="sortDirection"
           label="Filter On"
@@ -104,9 +104,9 @@
             <b-form-checkbox value="isActive">Active</b-form-checkbox>
           </b-form-checkbox-group>
         </b-form-group>
-      </b-col>
+      </b-col> -->
 
-      <b-col sm="5" md="6" class="my-1">
+      <!-- <b-col sm="5" md="6" class="my-1">
         <b-form-group
           label="Per page"
           label-for="per-page-select"
@@ -120,13 +120,13 @@
           <b-form-select
             id="per-page-select"
             v-model="perPage"
-            :options="pageOptions"
             size="sm"
           ></b-form-select>
+          
         </b-form-group>
-      </b-col>
-
-      <b-col sm="7" md="6" class="my-1">
+      </b-col> -->
+<!--:options="pageOptions" убрал --> 
+      <!-- <b-col sm="7" md="6" class="my-1">
         <b-pagination
           v-model="currentPage"
           :total-rows="totalRows"
@@ -135,7 +135,7 @@
           size="sm"
           class="my-0"
         ></b-pagination>
-      </b-col>
+      </b-col> -->
     </b-row>
 
     <!-- Main table element -->
@@ -204,34 +204,35 @@ export default {
       errors: [],
       fields: [
         {
-          key: "name",
-          label: "Person full name",
-          sortable: true,
-          sortDirection: "desc",
-        },
-        {
-          key: "age",
-          label: "Person age",
+          key: "id",
+          label: "ID",
           sortable: true,
           class: "text-center",
         },
         {
-          key: "isActive",
-          label: "Is Active",
-          formatter: (value) => {
-            // убрал  key, item
-            return value ? "Yes" : "No";
-          },
+          key: "username",
+          label: "Username",
           sortable: true,
-          sortByFormatted: true,
-          filterByFormatted: true,
+          sortDirection: "desc",
         },
-        { key: "actions", label: "Actions" },
+
+        // {
+        //   key: "isActive",
+        //   label: "Is Active",
+        //   formatter: (value) => {
+        //     // убрал  key, item
+        //     return value ? "Yes" : "No";
+        //   },
+        //   sortable: true,
+        //   sortByFormatted: true,
+        //   filterByFormatted: true,
+        // },
+        // { key: "actions", label: "Actions" },
       ],
       totalRows: 1,
       currentPage: 1,
-      perPage: 5,
-      pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
+      perPage: 15,
+      // pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
@@ -279,7 +280,6 @@ export default {
         console.log(this.items);
 
         alert("ALL OK!");
-        
       } catch (errors) {
         this.errors = await response.json();
         console.log(this.errors);
