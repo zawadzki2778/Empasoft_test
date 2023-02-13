@@ -49,7 +49,7 @@ export default {
 
 <style scoped>
   .container-fluid {
-  width: 75%;
+  width: 50%;
   background-color: rgb(241, 241, 241);
   padding-bottom: 5px;
 }
