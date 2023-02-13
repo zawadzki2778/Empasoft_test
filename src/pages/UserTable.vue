@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <h3>Список пользователей с фильтрацией по Username и сортировкой по ID</h3>
+    <h3>СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
     <!-- ======= filtration/search ======== -->
     <SearchUser
       :value="search"
@@ -9,11 +9,11 @@
     />
     <!-- ======= user creating ======== -->
     <div>
-      <b-button @click="openCreateModal">Создать пользователя</b-button>
+      <b-button lg="4" class="plr-2" pill variant="primary" @click="openCreateModal">Создать пользователя</b-button>
       <b-modal id="createUser" title="Создание пользователя" hide-footer>
         <b-form-input v-model="id" class="mb-2"></b-form-input>
-        <b-form-input v-model="username"></b-form-input>
-        <b-button @click="addUser">Создать</b-button>
+        <b-form-input v-model="username" class="mb-2"></b-form-input>
+        <b-button @click="addUser" variant="outline-success">Создать</b-button>
       </b-modal>
     </div>
 
@@ -29,7 +29,7 @@
       small
     >
       <template #cell(actions)="row">
-        <b-button size="sm" @click="info(row.item, $event.target)" class="mr-1">
+        <b-button size="sm" @click="info(row.item, $event.target)" class="mr-1" variant="link">
           Редактировать
         </b-button>
       </template>
@@ -38,15 +38,15 @@
     <!-- ======= user editing ======== -->
     <b-modal
       :id="infoModal.id"
-      title="Редактирование пользователя"
+      title="Редактировать"
       @hide="resetInfoModal"
       hide-footer
     >
       <!-- Вывожу инпуты в модалке, привязаные к значению из таблицы -->
       <b-form-input v-model="id" class="mb-2"></b-form-input>
-      <b-form-input v-model="username"></b-form-input>
+      <b-form-input v-model="username" class="mb-2"></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
-      <b-button @click="editUser(infoModal.id)">Сохранить</b-button>
+      <b-button @click="editUser(infoModal.id)" variant="outline-success">Редактировать</b-button>
     </b-modal>
   </b-container>
 </template>
@@ -72,12 +72,12 @@ export default {
         },
         {
           key: "username",
-          label: "Username",
+          label: "USERNAME",
           sortable: false,
         },
         {
           key: "actions",
-          label: "Edit",
+          label: "EDIT",
         },
       ],
       sortBy: "",
@@ -129,7 +129,7 @@ export default {
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
     // Create user
-    addUser() {
+    addUser() { 
       this.items.push({
         id: this.id,
         username: this.username,
@@ -157,15 +157,24 @@ export default {
 
 <style scoped>
 h3 {
+  color:  #007bff;
   padding: 20px;
+  font-weight: 600;
+}
+label {
+  color:  #007bff;
 }
 .container-fluid {
-  width: 75%;
-  background-color: rgb(241, 241, 241);
+  width: 55%;
+  background-color: #e3f0ff;
   padding-bottom: 5px;
+  border: 2px solid slategrey;
+  border-radius: 10px;
 }
 .table {
-  margin-top: 40px;
+  margin-top: 30px;
   background-color: white;
+  border-radius: 5px;
 }
+
 </style>
