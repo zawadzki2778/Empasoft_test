@@ -9,36 +9,27 @@
     />
     <!-- ======= user creating ======== -->
     <div>
-      <b-button @click="showModal" ref="btnShow">Создать пользователя</b-button>
-      <b-modal id="modal-1" title="Создание пользователя" hide-footer>
+      <b-button @click="openCreateModal">Создать пользователя</b-button>
+      <b-modal id="createUser" title="Создание пользователя" hide-footer>
         <b-form-input v-model="id" class="mb-2"></b-form-input>
         <b-form-input v-model="username"></b-form-input>
-        <b-button @click="hideModal">Закрой меня</b-button>
+        <b-button @click="addUser">Создать</b-button>
       </b-modal>
     </div>
 
     <!-- Main table element -->
     <b-table
       :fields="fields"
-      :current-page="currentPage"
-      :per-page="perPage"
       :filter="filter"
       :items="itemsFilter"
-      :filter-included-fields="filterOn"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
       stacked="md"
       show-empty
       small
-      @filtered="onFiltered"
     >
       <template #cell(actions)="row">
-        <b-button
-          size="sm"
-          @click="info(row.item, row.index, $event.target)"
-          class="mr-1"
-        >
+        <b-button size="sm" @click="info(row.item, $event.target)" class="mr-1">
           Редактировать
         </b-button>
       </template>
@@ -70,7 +61,7 @@ export default {
       items: [],
       search: "", // Добавил для фильтрации
       id: "", // для редактирования, что бы менялось по клику на кнопку, а не реактивно в табл.
-      username: "", //  ---------- // ------------ // ----------
+      username: "",
       errors: [],
       fields: [
         {
@@ -82,33 +73,16 @@ export default {
         {
           key: "username",
           label: "Username",
-          sortable: true,
-          sortDirection: "desc",
+          sortable: false,
         },
-        // {
-        //   key: "isActive",
-        //   label: "Is Active",
-        //   formatter: (value) => {
-        //     // убрал  key, item
-        //     return value ? "Yes" : "No";
-        //   },
-        //   sortable: true,
-        //   sortByFormatted: true,
-        //   filterByFormatted: true,
-        // },
         {
           key: "actions",
           label: "Edit",
         },
       ],
-      totalRows: 1,
-      currentPage: 1,
-      perPage: 15,
       sortBy: "",
       sortDesc: false,
-      sortDirection: "asc",
       filter: null,
-      filterOn: [],
       infoModal: {
         id: "info-modal",
         title: "",
@@ -117,14 +91,6 @@ export default {
     };
   },
   computed: {
-    sortOptions() {
-      // Create an options list from our fields
-      return this.fields
-        .filter((f) => f.sortable)
-        .map((f) => {
-          return { text: f.label, value: f.key };
-        });
-    },
     // ====== My filtration ======= //
     itemsFilter() {
       let array = this.items,
@@ -140,8 +106,6 @@ export default {
     },
   },
   mounted() {
-    // Set the initial number of items
-    this.totalRows = this.items.length;
     // Getting data from fake-server
     this.getUserData();
   },
@@ -158,14 +122,21 @@ export default {
       }
     },
     // bootstrap method
-    info(item, index, button) {
-      this.infoModal.title = `Row index: ${index}`;
+    info(item, button) {
       this.infoModal.content = item; // заменил JSON на item, т.е. мой объект
-      this.id = this.infoModal.content.id;
-      this.username = this.infoModal.content.username;
+      this.id = this.infoModal.content.id; // добавил
+      this.username = this.infoModal.content.username; // добавил
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
-    // editing user
+    // Create user
+    addUser() {
+      this.items.push({
+        id: this.id,
+        username: this.username,
+      });
+      this.$bvModal.hide("createUser");
+    },
+    // Editing user
     editUser(button) {
       this.infoModal.content.id = this.id;
       this.infoModal.content.username = this.username;
@@ -176,16 +147,9 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
-      this.currentPage = 1;
-    },
-    showModal() {
-      this.$root.$emit("bv::show::modal", "modal-1", "#btnShow");
-    },
-    hideModal() {
-      this.$root.$emit("bv::hide::modal", "modal-1", "#btnShow");
+    openCreateModal() {
+      this.$bvModal.show("createUser"); // открываем
+      this.id = this.username = ""; // очищаем инпуты
     },
   },
 };
