@@ -5,7 +5,7 @@
 
     <SearchUser
       :value="search"
-      placeholder="Find your note"
+      placeholder="Search username"
       @search="search = $event"
     />
 
@@ -198,11 +198,14 @@
     <b-modal
       :id="infoModal.id"
       title="Редактирование пользователя"
-      ok-only
       @hide="resetInfoModal"
+      hide-footer
     >
-      <pre>{{ infoModal.content.id }}</pre>
-      <pre>{{ infoModal.content.user }}</pre>
+      <!-- Вывожу инпуты в модалке, привязаные к значению из таблицы -->
+      <b-form-input v-model="id" class="mb-2"></b-form-input>
+      <b-form-input v-model="username"></b-form-input>
+      <!-- Добавили свою кнопку + метод на сохранение данных при редакте -->
+      <b-button @click="save(infoModal.id)">Сохранить</b-button>
     </b-modal>
   </b-container>
 </template>
@@ -211,13 +214,15 @@
 import SearchUser from "@/components/SearchUser.vue";
 // import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "UserTable", 
+  name: "UserTable",
   components: { SearchUser },
   data() {
     return {
       items: [],
+      id: "",
+      username: "",
       errors: [],
-      search: "", // Добавил для фильтрации 
+      search: "", // Добавил для фильтрации
       fields: [
         {
           key: "id",
@@ -231,7 +236,6 @@ export default {
           sortable: true,
           sortDirection: "desc",
         },
-
         // {
         //   key: "isActive",
         //   label: "Is Active",
@@ -243,7 +247,10 @@ export default {
         //   sortByFormatted: true,
         //   filterByFormatted: true,
         // },
-        { key: "actions", label: "Actions" },
+        {
+          key: "actions",
+          label: "Edit",
+        },
       ],
       totalRows: 1,
       currentPage: 1,
@@ -274,23 +281,23 @@ export default {
         });
     },
 
-    // Фильтрация 
-    itemsFilter () {
+    // Фильтрация
+    itemsFilter() {
       let array = this.items,
-          search = this.search
-      if (!search) return array
-      // trim - убираем пробелы и приводим к нижнему регистру 
-      search = search.trim().toLowerCase() 
-      // фильтруем массив 
+        search = this.search;
+      if (!search) return array;
+      // trim - убираем пробелы и приводим к нижнему регистру
+      search = search.trim().toLowerCase();
+      // фильтруем массив
       array = array.filter(function (item) {
-        if (item.username.toLowerCase().indexOf(search) !== -1) { 
-      //Метод indexOf() возвращает первый индекс, по которому данный элемент может быть найден в массиве или -1, если такого индекса нет.
-          return item
+        if (item.username.toLowerCase().indexOf(search) !== -1) {
+          //Метод indexOf() возвращает первый индекс, по которому данный элемент может быть найден в массиве или -1, если такого индекса нет.
+          return item;
         }
-      })
-      // проверка на ошибку 
+      });
+      // проверка на ошибку
       return array;
-    }
+    },
   },
   mounted() {
     // Set the initial number of items
@@ -315,11 +322,18 @@ export default {
         this.errors = await response.json();
       }
     },
-    // ----------------------------------------- // 
+    // ----------------------------------------- //
     info(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
-      this.infoModal.content = item; // заменил JSON на item, т.е. мой объект  
+      this.infoModal.content = item; // заменил JSON на item, т.е. мой объект
+      this.id = this.infoModal.content.id;
+      this.username = this.infoModal.content.username;
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
+    },
+    save(button) {
+      this.infoModal.content.id = this.id
+      this.infoModal.content.username = this.username
+      this.$bvModal.hide(button) // добавили закрытие модалки по ID 
     },
     resetInfoModal() {
       this.infoModal.title = "";
@@ -336,7 +350,7 @@ export default {
 
 <style scoped>
 h3 {
-  padding-top: 20px;
+  padding: 20px;
 }
 .container-fluid {
   width: 75%;
