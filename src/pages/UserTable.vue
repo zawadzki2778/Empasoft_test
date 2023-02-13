@@ -2,9 +2,16 @@
   <b-container fluid>
     <!-- User Interface controls -->
     <h3>Список пользователей с фильтрацией по Username и сортировкой по ID</h3>
+
+    <SearchUser
+      :value="search"
+      placeholder="Find your note"
+      @search="search = $event"
+    />
+
     <b-row class="p-3">
-      <b-col lg="6" class="my-1">
-        <b-form-group
+      <!-- <b-col lg="6" class="my-1"> -->
+      <!-- <b-form-group
           label="Sort"
           label-for="sort-by-select"
           label-cols-sm="3"
@@ -12,8 +19,8 @@
           label-size="sm"
           class="mb-0"
           v-slot="{ ariaDescribedby }"
-        >
-          <b-input-group size="sm">
+        > -->
+      <!-- <b-input-group size="sm">
             <b-form-select
               id="sort-by-select"
               v-model="sortBy"
@@ -24,21 +31,21 @@
               <template #first>
                 <option value="">-- none --</option>
               </template>
-            </b-form-select>
+            </b-form-select> -->
 
-            <!-- <b-form-select
+      <!-- <b-form-select
               v-model="sortDesc"
               :disabled="!sortBy"
               :aria-describedby="ariaDescribedby"
               size="sm"
               class="w-25"
             > -->
-            <!-- <option :value="false">Asc</option> -->
-            <!-- <option :value="true">Desc</option> -->
-            <!-- </b-form-select> -->
-          </b-input-group>
-        </b-form-group>
-      </b-col>
+      <!-- <option :value="false">Asc</option> -->
+      <!-- <option :value="true">Desc</option> -->
+      <!-- </b-form-select>
+          </b-input-group> -->
+      <!-- </b-form-group> -->
+      <!-- </b-col> -->
 
       <!-- <b-col lg="6" class="my-1">
         <b-form-group
@@ -57,7 +64,7 @@
           ></b-form-select>
         </b-form-group>
       </b-col> -->
-
+      <!-- ФИЛЬТРАЦИЯ ============================= -
       <b-col lg="6" class="my-1">
         <b-form-group
           label="Filter"
@@ -86,7 +93,7 @@
             </b-input-group-append>
           </b-input-group>
         </b-form-group>
-      </b-col>
+      </b-col> -->
 
       <!-- <b-col lg="6" class="my-1">
         <b-form-group
@@ -145,11 +152,11 @@
 
     <!-- Main table element -->
     <b-table
-      :items="items"
       :fields="fields"
       :current-page="currentPage"
       :per-page="perPage"
       :filter="filter"
+      :items="itemsFilter"
       :filter-included-fields="filterOn"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
@@ -159,24 +166,24 @@
       small
       @filtered="onFiltered"
     >
-      <template #cell(name)="row">
+      <!-- <template #cell(name)="row">
         {{ row.value.first }} {{ row.value.last }}
       </template>
-
+ -->
       <template #cell(actions)="row">
         <b-button
           size="sm"
           @click="info(row.item, row.index, $event.target)"
           class="mr-1"
         >
-          Info modal
+          Редактировать
         </b-button>
-        <b-button size="sm" @click="row.toggleDetails">
+        <!-- <b-button size="sm" @click="row.toggleDetails">
           {{ row.detailsShowing ? "Hide" : "Show" }} Details
-        </b-button>
+        </b-button> -->
       </template>
 
-      <template #row-details="row">
+      <!-- <template #row-details="row">
         <b-card>
           <ul>
             <li v-for="(value, key) in row.item" :key="key">
@@ -184,29 +191,33 @@
             </li>
           </ul>
         </b-card>
-      </template>
+      </template> -->
     </b-table>
 
     <!-- Info modal -->
     <b-modal
       :id="infoModal.id"
-      :title="infoModal.title"
+      title="Редактирование пользователя"
       ok-only
       @hide="resetInfoModal"
     >
-      <pre>{{ infoModal.content }}</pre>
+      <pre>{{ infoModal.content.id }}</pre>
+      <pre>{{ infoModal.content.user }}</pre>
     </b-modal>
   </b-container>
 </template>
 
 <script>
+import SearchUser from "@/components/SearchUser.vue";
 // import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "UserTable",
+  name: "UserTable", 
+  components: { SearchUser },
   data() {
     return {
       items: [],
       errors: [],
+      search: "", // Добавил для фильтрации 
       fields: [
         {
           key: "id",
@@ -232,7 +243,7 @@ export default {
         //   sortByFormatted: true,
         //   filterByFormatted: true,
         // },
-        // { key: "actions", label: "Actions" },
+        { key: "actions", label: "Actions" },
       ],
       totalRows: 1,
       currentPage: 1,
@@ -262,6 +273,24 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
+
+    // Фильтрация 
+    itemsFilter () {
+      let array = this.items,
+          search = this.search
+      if (!search) return array
+      // trim - убираем пробелы и приводим к нижнему регистру 
+      search = search.trim().toLowerCase() 
+      // фильтруем массив 
+      array = array.filter(function (item) {
+        if (item.username.toLowerCase().indexOf(search) !== -1) { 
+      //Метод indexOf() возвращает первый индекс, по которому данный элемент может быть найден в массиве или -1, если такого индекса нет.
+          return item
+        }
+      })
+      // проверка на ошибку 
+      return array;
+    }
   },
   mounted() {
     // Set the initial number of items
@@ -286,9 +315,10 @@ export default {
         this.errors = await response.json();
       }
     },
+    // ----------------------------------------- // 
     info(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
-      this.infoModal.content = JSON.stringify(item, null, 2);
+      this.infoModal.content = item; // заменил JSON на item, т.е. мой объект  
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
     resetInfoModal() {
@@ -305,9 +335,12 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+  padding-top: 20px;
+}
 .container-fluid {
   width: 75%;
-  background-color:  rgb(241, 241, 241);;
+  background-color: rgb(241, 241, 241);
   padding-bottom: 5px;
 }
 .table {
