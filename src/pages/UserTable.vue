@@ -1,154 +1,21 @@
 <template>
   <b-container fluid>
-    <!-- User Interface controls -->
     <h3>Список пользователей с фильтрацией по Username и сортировкой по ID</h3>
-
+    <!-- ======= filtration/search ======== -->
     <SearchUser
       :value="search"
       placeholder="Search username"
       @search="search = $event"
     />
-
-    <b-row class="p-3">
-      <!-- <b-col lg="6" class="my-1"> -->
-      <!-- <b-form-group
-          label="Sort"
-          label-for="sort-by-select"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-          v-slot="{ ariaDescribedby }"
-        > -->
-      <!-- <b-input-group size="sm">
-            <b-form-select
-              id="sort-by-select"
-              v-model="sortBy"
-              :options="sortOptions"
-              :aria-describedby="ariaDescribedby"
-              class="w-75"
-            >
-              <template #first>
-                <option value="">-- none --</option>
-              </template>
-            </b-form-select> -->
-
-      <!-- <b-form-select
-              v-model="sortDesc"
-              :disabled="!sortBy"
-              :aria-describedby="ariaDescribedby"
-              size="sm"
-              class="w-25"
-            > -->
-      <!-- <option :value="false">Asc</option> -->
-      <!-- <option :value="true">Desc</option> -->
-      <!-- </b-form-select>
-          </b-input-group> -->
-      <!-- </b-form-group> -->
-      <!-- </b-col> -->
-
-      <!-- <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Initial sort"
-          label-for="initial-sort-select"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-form-select
-            id="initial-sort-select"
-            v-model="sortDirection"
-            :options="['asc', 'desc', 'last']"
-            size="sm"
-          ></b-form-select>
-        </b-form-group>
-      </b-col> -->
-      <!-- ФИЛЬТРАЦИЯ ============================= -
-      <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Filter"
-          label-for="filter-input"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-input-group size="sm">
-            <b-form-input
-              class="mr-3"
-              id="filter-input"
-              v-model="filter"
-              type="search"
-              placeholder="Type to Search"
-            ></b-form-input>
-
-            <b-input-group-append>
-              <b-button
-                :disabled="!filter"
-                @click="filter = ''"
-                variant="outline-primary"
-                >Clear</b-button
-              >
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col> -->
-
-      <!-- <b-col lg="6" class="my-1">
-        <b-form-group
-          v-model="sortDirection"
-          label="Filter On"
-          description="Leave all unchecked to filter on all data"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-          v-slot="{ ariaDescribedby }"
-        >
-          <b-form-checkbox-group
-            v-model="filterOn"
-            :aria-describedby="ariaDescribedby"
-            class="mt-1"
-          >
-            <b-form-checkbox value="name">Name</b-form-checkbox>
-            <b-form-checkbox value="age">Age</b-form-checkbox>
-            <b-form-checkbox value="isActive">Active</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
-      </b-col> -->
-
-      <!-- <b-col sm="5" md="6" class="my-1">
-        <b-form-group
-          label="Per page"
-          label-for="per-page-select"
-          label-cols-sm="6"
-          label-cols-md="4"
-          label-cols-lg="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-form-select
-            id="per-page-select"
-            v-model="perPage"
-            size="sm"
-          ></b-form-select>
-          
-        </b-form-group>
-      </b-col> -->
-      <!--:options="pageOptions" убрал -->
-      <!-- <b-col sm="7" md="6" class="my-1">
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          align="fill"
-          size="sm"
-          class="my-0"
-        ></b-pagination>
-      </b-col> -->
-    </b-row>
+    <!-- ======= user creating ======== -->
+    <div>
+      <b-button @click="showModal" ref="btnShow">Создать пользователя</b-button>
+      <b-modal id="modal-1" title="Создание пользователя" hide-footer>
+        <b-form-input v-model="id" class="mb-2"></b-form-input>
+        <b-form-input v-model="username"></b-form-input>
+        <b-button @click="hideModal">Закрой меня</b-button>
+      </b-modal>
+    </div>
 
     <!-- Main table element -->
     <b-table
@@ -166,10 +33,6 @@
       small
       @filtered="onFiltered"
     >
-      <!-- <template #cell(name)="row">
-        {{ row.value.first }} {{ row.value.last }}
-      </template>
- -->
       <template #cell(actions)="row">
         <b-button
           size="sm"
@@ -178,23 +41,10 @@
         >
           Редактировать
         </b-button>
-        <!-- <b-button size="sm" @click="row.toggleDetails">
-          {{ row.detailsShowing ? "Hide" : "Show" }} Details
-        </b-button> -->
       </template>
-
-      <!-- <template #row-details="row">
-        <b-card>
-          <ul>
-            <li v-for="(value, key) in row.item" :key="key">
-              {{ key }}: {{ value }}
-            </li>
-          </ul>
-        </b-card>
-      </template> -->
     </b-table>
 
-    <!-- Info modal -->
+    <!-- ======= user editing ======== -->
     <b-modal
       :id="infoModal.id"
       title="Редактирование пользователя"
@@ -204,25 +54,24 @@
       <!-- Вывожу инпуты в модалке, привязаные к значению из таблицы -->
       <b-form-input v-model="id" class="mb-2"></b-form-input>
       <b-form-input v-model="username"></b-form-input>
-      <!-- Добавили свою кнопку + метод на сохранение данных при редакте -->
-      <b-button @click="save(infoModal.id)">Сохранить</b-button>
+      <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
+      <b-button @click="editUser(infoModal.id)">Сохранить</b-button>
     </b-modal>
   </b-container>
 </template>
 
 <script>
 import SearchUser from "@/components/SearchUser.vue";
-// import { mapActions, mapGetters } from "vuex";
 export default {
   name: "UserTable",
   components: { SearchUser },
   data() {
     return {
       items: [],
-      id: "",
-      username: "",
-      errors: [],
       search: "", // Добавил для фильтрации
+      id: "", // для редактирования, что бы менялось по клику на кнопку, а не реактивно в табл.
+      username: "", //  ---------- // ------------ // ----------
+      errors: [],
       fields: [
         {
           key: "id",
@@ -255,7 +104,6 @@ export default {
       totalRows: 1,
       currentPage: 1,
       perPage: 15,
-      // pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
@@ -269,9 +117,6 @@ export default {
     };
   },
   computed: {
-    // // ************ from VUEX ************ //
-    // ...mapGetters(["GET_ITEMS"]),
-
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -280,38 +125,28 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-
-    // Фильтрация
+    // ====== My filtration ======= //
     itemsFilter() {
       let array = this.items,
         search = this.search;
       if (!search) return array;
-      // trim - убираем пробелы и приводим к нижнему регистру
       search = search.trim().toLowerCase();
-      // фильтруем массив
       array = array.filter(function (item) {
         if (item.username.toLowerCase().indexOf(search) !== -1) {
-          //Метод indexOf() возвращает первый индекс, по которому данный элемент может быть найден в массиве или -1, если такого индекса нет.
           return item;
         }
       });
-      // проверка на ошибку
       return array;
     },
   },
   mounted() {
     // Set the initial number of items
     this.totalRows = this.items.length;
-
+    // Getting data from fake-server
     this.getUserData();
-    //  // ************ from VUEX ************ //
-    //   this.GET_ITEMS(this.items);
-
-    //   this.FETCH_ITEMS(this.items);
   },
   methods: {
-    // // ************ from VUEX ************ //
-    // ...mapActions(["FETCH_ITEMS"]),
+    // Getting data from fake-server
     async getUserData() {
       const response = await fetch(
         "https://jsonplaceholder.typicode.com/users"
@@ -322,7 +157,7 @@ export default {
         this.errors = await response.json();
       }
     },
-    // ----------------------------------------- //
+    // bootstrap method
     info(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
       this.infoModal.content = item; // заменил JSON на item, т.е. мой объект
@@ -330,11 +165,13 @@ export default {
       this.username = this.infoModal.content.username;
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
-    save(button) {
-      this.infoModal.content.id = this.id
-      this.infoModal.content.username = this.username
-      this.$bvModal.hide(button) // добавили закрытие модалки по ID 
+    // editing user
+    editUser(button) {
+      this.infoModal.content.id = this.id;
+      this.infoModal.content.username = this.username;
+      this.$bvModal.hide(button); // добавили закрытие модалки по ID
     },
+    // bootstrap method
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
@@ -343,6 +180,12 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
+    },
+    showModal() {
+      this.$root.$emit("bv::show::modal", "modal-1", "#btnShow");
+    },
+    hideModal() {
+      this.$root.$emit("bv::hide::modal", "modal-1", "#btnShow");
     },
   },
 };

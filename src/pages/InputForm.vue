@@ -20,7 +20,9 @@
         v-model="password"
         placeholder="Введите ваш пароль"
       ></b-form-input>
-      <b-button class="m-3" @click="openTable" variant="outline-primary">подтвердить</b-button>
+      <b-button class="m-3" @click="openTable" variant="outline-primary"
+        >подтвердить</b-button
+      >
     </b-container>
   </div>
 </template>
@@ -48,10 +50,9 @@ export default {
 </script>
 
 <style scoped>
-  .container-fluid {
+.container-fluid {
   width: 50%;
   background-color: rgb(241, 241, 241);
   padding-bottom: 5px;
 }
-
 </style>
