@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-container fluid>
-      <h3>Авторизация пользователя</h3>
+      <h3>АВТОРИЗАЦИЯ</h3>
       <label>имя пользователя</label>
       <b-form-input
         v-model="username"
@@ -20,7 +20,7 @@
         v-model="password"
         placeholder="Введите ваш пароль"
       ></b-form-input>
-      <b-button class="m-3" @click="openTable" variant="outline-primary"
+      <b-button class="m-3" @click="openTable" variant="outline-success"
         >подтвердить</b-button
       >
     </b-container>
@@ -51,8 +51,15 @@ export default {
 
 <style scoped>
 .container-fluid {
-  width: 50%;
-  background-color: rgb(241, 241, 241);
+  width: 33%;
+  background-color: white;
   padding-bottom: 5px;
+  border: 2px solid slategrey; 
+  border-radius: 10px;
+}
+h3 {
+  color: #007bff;
+  font-weight: 600;
+  padding: 20px;
 }
 </style>

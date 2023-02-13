@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper__search">   
+  <div class="wrapper__search">
     <!-- Search input -->
     <b-form-input
       class="input-search"
@@ -13,8 +13,8 @@
 <script>
 export default {
   name: "SearchUser",
-  props: {
-    value: {
+  value: {
+    props: {
       type: String,
       require: true,
     },
@@ -30,7 +30,6 @@ export default {
   },
   watch: {
     search(val) {
-      console.log(val);
       this.$emit("search", val);
     },
   },
@@ -39,8 +38,8 @@ export default {
 
 <style>
 .input-search {
-  margin: 0 auto;
-  padding: 8px 8px 8px 24px !important;
+  margin: 0 auto 20px;
+  padding: 6px 6px 6px 24px !important;
   border-radius: 30px;
   font-size: 16px;
   width: 50%;
