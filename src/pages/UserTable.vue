@@ -1,6 +1,6 @@
 <template>
-  <b-container fluid>
-    <h3>СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
+  <b-container class="col-lg-6 col-md-6 col-sm-6" fluid>
+    <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
     <!-- ======= filtration/search ======== -->
     <SearchUser
       :value="search"
@@ -9,16 +9,28 @@
     />
     <!-- ======= user creating ======== -->
     <div>
-      <b-button lg="4" class="plr-2" pill variant="primary" @click="openCreateModal">Создать пользователя</b-button>
-      <b-modal id="createUser" title="Создание пользователя" hide-footer>
-        <b-form-input v-model="id" class="mb-2"></b-form-input>
-        <b-form-input v-model="username" class="mb-2"></b-form-input>
-        <b-button @click="addUser" variant="outline-success">Создать</b-button>
-      </b-modal>
+      <div class="text-center">
+        <b-button
+          lg="4"
+          class="plr-2"
+          pill
+          variant="primary"
+          @click="openCreateModal"
+          >Создать пользователя</b-button
+        >
+        <b-modal id="createUser" title="Создание пользователя" hide-footer>
+          <b-form-input v-model="id" class="mb-2"></b-form-input>
+          <b-form-input v-model="username" class="mb-2"></b-form-input>
+          <b-button @click="addUser" variant="outline-success"
+            >Создать</b-button
+          >
+        </b-modal>
+      </div>
     </div>
 
     <!-- Main table element -->
     <b-table
+      class="mt-3"
       :fields="fields"
       :filter="filter"
       :items="itemsFilter"
@@ -29,7 +41,12 @@
       small
     >
       <template #cell(actions)="row">
-        <b-button size="sm" @click="info(row.item, $event.target)" class="mr-1" variant="link">
+        <b-button
+          size="sm"
+          @click="info(row.item, $event.target)"
+          class="mr-1"
+          variant="link"
+        >
           Редактировать
         </b-button>
       </template>
@@ -46,7 +63,9 @@
       <b-form-input v-model="id" class="mb-2"></b-form-input>
       <b-form-input v-model="username" class="mb-2"></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
-      <b-button @click="editUser(infoModal.id)" variant="outline-success">Редактировать</b-button>
+      <b-button @click="editUser(infoModal.id)" variant="outline-success"
+        >Редактировать</b-button
+      >
     </b-modal>
   </b-container>
 </template>
@@ -129,7 +148,7 @@ export default {
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
     // Create user
-    addUser() { 
+    addUser() {
       this.items.push({
         id: this.id,
         username: this.username,
@@ -157,24 +176,25 @@ export default {
 
 <style scoped>
 h3 {
-  color:  #007bff;
-  padding: 20px;
+  color: #007bff;
   font-weight: 600;
 }
+@media (max-width: 700px) {
+  h3 {
+    font-size: 18px;
+  }
+}
 label {
-  color:  #007bff;
+  color: #007bff;
 }
 .container-fluid {
-  width: 55%;
   background-color: #e3f0ff;
   padding-bottom: 5px;
   border: 2px solid slategrey;
   border-radius: 10px;
 }
 .table {
-  margin-top: 30px;
   background-color: white;
   border-radius: 5px;
 }
-
 </style>
