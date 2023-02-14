@@ -1,5 +1,5 @@
 <template>
-  <div class="search">   
+  <div class="search col-md-8 col-sm-12">   
     <!-- Search input -->
     <b-form-input
       class="input-search" 
@@ -39,7 +39,7 @@ export default {
   padding: 6px 6px 6px 24px !important;
   border-radius: 30px;
   font-size: 16px;
-  width: 50%;
+  width: 100%;
   height: auto;
 }
 </style>
