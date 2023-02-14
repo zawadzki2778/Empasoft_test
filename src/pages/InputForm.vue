@@ -68,7 +68,6 @@ export default {
   border-radius: 10px;
 }
 h3 {
-  color: #007bff;
   font-weight: 600;
 }
 @media (max-width: 380px) {

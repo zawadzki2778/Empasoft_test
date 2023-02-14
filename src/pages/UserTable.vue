@@ -2,12 +2,13 @@
   <b-container class="col-lg-6 col-md-6 col-sm-6" fluid>
     <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
     <!-- ======= filtration/search ======== -->
-    <SearchUser
+    
+    <!-- ======= user creating ======== -->
+    <div class="d-flex justify-content-center flex-wrap" >
+      <SearchUser
       :value="search"
       @search="search = $event"
     />
-    <!-- ======= user creating ======== -->
-    <div>
       <div class="text-center">
         <b-button
           lg="4"
@@ -175,7 +176,6 @@ export default {
 
 <style scoped>
 h3 {
-  color: #007bff;
   font-weight: 600;
 }
 @media (max-width: 700px) {
