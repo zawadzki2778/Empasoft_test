@@ -4,7 +4,6 @@
     <!-- ======= filtration/search ======== -->
     <SearchUser
       :value="search"
-      placeholder="Search username"
       @search="search = $event"
     />
     <!-- ======= user creating ======== -->

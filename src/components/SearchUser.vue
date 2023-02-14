@@ -2,9 +2,9 @@
   <div class="search">   
     <!-- Search input -->
     <b-form-input
-      class="input-search"
+      class="input-search" 
+      placeholder="Search username"
       type="text"
-      :placeholder="placeholder"
       v-model="search"
     />
   </div>
@@ -17,10 +17,6 @@ export default {
     props: {
       type: String,
       require: true,
-    },
-    placeholder: {
-      type: String,
-      default: "Search",
     },
   },
   data() {
