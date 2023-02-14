@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper__search">
+  <div class="search">   
     <!-- Search input -->
     <b-form-input
       class="input-search"
@@ -37,6 +37,7 @@ export default {
 </script>
 
 <style>
+
 .input-search {
   margin: 0 auto 20px;
   padding: 6px 6px 6px 24px !important;
