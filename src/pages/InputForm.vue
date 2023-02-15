@@ -11,7 +11,7 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-feedback">
-        Введите не менее 3 символов
+        введите не менее 3 символов
       </b-form-invalid-feedback>
       <label class="mt-2 text-left">пароль</label>
       <b-form-input
@@ -26,9 +26,15 @@
         пароль состоит только из цифр и не менее 4х символов
       </b-form-invalid-feedback>
       <div class="text-center">
-        <b-button class="m-3" @click="openTable" variant="outline-success"
+        <b-button
+          class="m-3"
+          @click="openTable"
+          variant="outline-success"
+          :disabled="nameState && passwordState ? disabled = false : disabled = true"
           >подтвердить</b-button
         >
+        <!-- можно забаиндить :disabled="disabledButoon и в computed прописать : 
+        return this.nameState && this.passwordState ? false : true -->
       </div>
     </b-container>
   </div>
@@ -41,11 +47,13 @@ export default {
     return {
       username: "",
       password: "",
+      disabled: true,
     };
   },
   computed: {
     nameState() {
-      return this.username.length > 2 ? true : false;
+     return this.username.length > 2 ? true : false;
+
     },
     passwordState() {
       const check = /^\d+$/.test(this.password);
@@ -65,7 +73,7 @@ export default {
   background-color: white;
   padding-bottom: 5px;
   border: 2px solid slategrey;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 h3 {
   font-weight: 600;
