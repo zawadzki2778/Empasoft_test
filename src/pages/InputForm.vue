@@ -53,7 +53,6 @@ export default {
   computed: {
     nameState() {
      return this.username.length > 2 ? true : false;
-
     },
     passwordState() {
       const check = /^\d+$/.test(this.password);

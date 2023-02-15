@@ -11,16 +11,32 @@
           lg="4"
           class="plr-2"
           pill
-          variant="primary"
+          variant="outline-primary"
           @click="openCreateModal"
           >Создать пользователя</b-button
         >
         <b-modal id="createUser" title="Создание пользователя" hide-footer>
-          <b-form-input v-model="id" class="mb-2"></b-form-input>
-          <b-form-input v-model="username" class="mb-2"></b-form-input>
-          <b-button @click="addUser" variant="outline-success"
-            >Создать</b-button
-          >
+          <b-form-input
+            :id="id"
+            :state="idState"
+            v-model="id"
+            class="mb-2"
+            placeholder="Введите ваш ID"
+            aria-describedby="input-live-help input-live-id"
+            trim
+          ></b-form-input>
+          <!-- <b-form-invalid-feedback id="input-live-id">
+            id совпадают
+          </b-form-invalid-feedback> -->
+          <b-form-input
+            :state="usernameState"
+            v-model="username"
+            class="mb-2"
+            placeholder="Введите ваше имя"
+            aria-describedby="input-live-help input-live-username"
+            trim
+          ></b-form-input>
+          <b-button @click="addUser" variant="success">Создать</b-button>
         </b-modal>
       </div>
     </div>
@@ -60,7 +76,7 @@
       <b-form-input v-model="id" class="mb-2"></b-form-input>
       <b-form-input v-model="username" class="mb-2"></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
-      <b-button @click="editUser(infoModal.id)" variant="outline-success" 
+      <b-button @click="editUser(infoModal.id)" variant="outline-success"
         >Редактировать</b-button
       >
     </b-modal>
@@ -77,7 +93,8 @@ export default {
       items: [],
       search: "", // Добавил для фильтрации
       id: "", // для редактирования, что бы менялось по клику на кнопку, а не реактивно в табл.
-      username: "",
+      username: "", // ----- `` -----
+      // disabled: true,
       errors: [],
       fields: [
         {
@@ -96,10 +113,11 @@ export default {
           label: "EDIT",
         },
       ],
-      sortBy: "",
-      sortDesc: false,
-      filter: null,
+      sortBy: "", // bootstrap
+      sortDesc: false, // bootstrap
+      filter: null, // bootstrap
       infoModal: {
+        // bootstrap
         id: "info-modal",
         title: "",
         content: "",
@@ -120,7 +138,22 @@ export default {
       });
       return array;
     },
+    // ====== validation btn ========= //
+    idState() {
+      const result = 1;
+      this.items.forEach((item) => {
+        if (item.id.toString() !== this.id) {
+          return true; // nuzno kakto prisvoit result (item ne vidit) i sravnit v return
+        }
+        console.log(this.id);
+      });
+      return this.id.length > 0 && this.id !== result ? true : false;
+    },
+    usernameState() {
+      return this.username.length > 2 ? true : false;
+    },
   },
+
   mounted() {
     // Getting data from fake-server
     this.getUserData();
