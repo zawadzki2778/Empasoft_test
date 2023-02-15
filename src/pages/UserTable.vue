@@ -2,13 +2,10 @@
   <b-container class="col-lg-6 col-md-6 col-sm-6" fluid>
     <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
     <!-- ======= filtration/search ======== -->
-    
+
     <!-- ======= user creating ======== -->
-    <div class="d-flex justify-content-center flex-wrap" >
-      <SearchUser
-      :value="search"
-      @search="search = $event"
-    />
+    <div class="d-flex justify-content-center flex-wrap">
+      <SearchUser :value="search" @search="search = $event" />
       <div class="text-center">
         <b-button
           lg="4"
@@ -63,7 +60,7 @@
       <b-form-input v-model="id" class="mb-2"></b-form-input>
       <b-form-input v-model="username" class="mb-2"></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
-      <b-button @click="editUser(infoModal.id)" variant="outline-success"
+      <b-button @click="editUser(infoModal.id)" variant="outline-success" 
         >Редактировать</b-button
       >
     </b-modal>
@@ -190,7 +187,7 @@ label {
   background-color: #e3f0ff;
   padding-bottom: 5px;
   border: 2px solid slategrey;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .table {
   background-color: white;
