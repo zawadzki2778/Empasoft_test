@@ -29,7 +29,7 @@
         <b-button
           class="m-3"
           @click="openTable"
-          variant="outline-success"
+          variant="success"
           :disabled="nameState && passwordState ? disabled = false : disabled = true"
           >подтвердить</b-button
         >
