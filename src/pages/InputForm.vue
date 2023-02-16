@@ -23,13 +23,13 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-password">
-        пароль состоит только из цифр и не менее 4х символов
       </b-form-invalid-feedback>
       <div class="text-center">
         <b-button
           class="m-3"
           @click="openTable"
           variant="success"
+          :disabled="nameState && passwordState ? (disabled = false) : (disabled = true)"
           >подтвердить</b-button
         >
         <!-- можно забаиндить :disabled="disabledButoon и в computed прописать : 
@@ -51,16 +51,17 @@ export default {
   },
   computed: {
     nameState() {
-      return this.username.length > 2 ? true : false;
+      const validUsername = /^[\w.@+-]+$/.test(this.username);
+      return validUsername && this.username.length < 150 ? true : false;
     },
     passwordState() {
-      const check = /^\d+$/.test(this.password);
-      return check && this.password.length > 3 ? true : false;
+      const validPassword = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(this.password);
+      return validPassword && this.username.length < 150 ? true : false;
     },
   },
   methods: {
     openTable() {
-      return this.$http({
+      this.$http({
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
@@ -72,13 +73,13 @@ export default {
         },
       }).then((res) => {
         if (res.status == 400) {
-          console.log(res.data.non_field_errors)
+          console.log(res.data.non_field_errors);
         } else {
           console.log(res);
-          localStorage.setItem('token', res.data.token) // Кладём токен при авторизации  в локольное хранилище
+          localStorage.setItem("token", res.data.token); // Кладём токен при авторизации  в локольное хранилище
           this.$router.push({ name: "UserTable" });
-        } 
-      })
+        }
+      });
     },
   },
 };

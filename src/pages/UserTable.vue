@@ -1,8 +1,6 @@
 <template>
-  <b-container class="col-lg-6 col-md-6 col-sm-6" fluid>
+  <b-container class="col-lg-12 col-md-8 col-sm-8" fluid>
     <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
-    <!-- ======= filtration/search ======== -->
-
     <!-- ======= user creating ======== -->
     <div class="d-flex justify-content-center flex-wrap">
       <SearchUser :value="search" @search="search = $event" />
@@ -16,26 +14,61 @@
           >Создать пользователя</b-button
         >
         <b-modal id="createUser" title="Создание пользователя" hide-footer>
-          <b-form-input
+          <!-- <b-form-input
+            type="number"
             :state="idState"
             v-model="id"
             class="mb-2"
             placeholder="Введите ваш ID"
             aria-describedby="input-live-help input-live-id"
             trim
-          ></b-form-input>
+          ></b-form-input> -->
           <!-- <b-form-invalid-feedback id="input-live-id">
             id совпадают
           </b-form-invalid-feedback> -->
           <b-form-input
             :state="usernameState"
-            v-model="username"
+            v-model="form.username"
             class="mb-2"
-            placeholder="Введите ваше имя"
+            placeholder="username"
             aria-describedby="input-live-help input-live-username"
             trim
           ></b-form-input>
-          <b-button @click="addUser" variant="success">Создать</b-button>
+          <b-form-input
+            :state="firstNameState"
+            v-model="form.firstName"
+            class="mb-2"
+            placeholder="введите ваше имя"
+            aria-describedby="input-live-help input-live-firstName"
+            trim
+          ></b-form-input>
+          <b-form-input
+            :state="lastNameState"
+            v-model="form.lastName"
+            class="mb-2"
+            placeholder="введите вашу фамилию"
+            aria-describedby="input-live-help input-live-lastName"
+            trim
+          ></b-form-input>
+          <b-form-input
+            :state="passwordState"
+            v-model="form.password"
+            class="mb-2"
+            placeholder="введите пароль"
+            aria-describedby="input-live-help input-live-password"
+            trim
+          ></b-form-input>
+          <span>{{ error[0] }}</span>
+          <b-button
+            @click="addUser"
+            variant="success"
+            :disabled="
+              usernameState && firstNameState && lastNameState && passwordState
+                ? (disabled = false)
+                : (disabled = true)
+            "
+            >Создать</b-button
+          >
         </b-modal>
       </div>
     </div>
@@ -63,8 +96,7 @@
         </b-button>
       </template>
     </b-table>
-
-    <!-- ======= user editing ======== -->
+    <!-- =======  editing user ======== -->
     <b-modal
       :id="infoModal.id"
       title="Редактировать"
@@ -90,9 +122,17 @@ export default {
   data() {
     return {
       items: [],
+      form: {
+        username: "",
+        firstName: "",
+        lastName: "",
+        password: "",
+        isActive: true,
+      },
+      error: "",
       search: "", // Добавил для фильтрации
-      id: "", 
-      username: "", 
+      id: "",
+      username: "",
       // disabled: true,
       errors: [],
       fields: [
@@ -105,6 +145,21 @@ export default {
         {
           key: "username",
           label: "USERNAME",
+          sortable: false,
+        },
+        {
+          key: "first_name",
+          label: "FIRST NAME",
+          sortable: false,
+        },
+        {
+          key: "last_name",
+          label: "LAST NAME",
+          sortable: false,
+        },
+        {
+          key: "is_active",
+          label: "ACTIVE",
           sortable: false,
         },
         {
@@ -137,58 +192,78 @@ export default {
       });
       return array;
     },
-    idState() {
-      let users = this.items.find(item => item.id == this.id)
-      return users
-    },
+    // idState() {
+    //   //написал медот для проверки на уникальность по ID
+    //   let userId = this.tems.find((item) => item.id === this.id);
+    //   return userId === undefined ? false : true;
+    // },
     usernameState() {
-      return this.username.length > 2 ? true : false
-    }
+      const validUsername = /^[\w.@+-]+$/.test(this.form.username);
+      return validUsername && this.form.username.length < 150 ? true : false;
+    },
+    firstNameState() {
+      return this.form.firstName.length > 2 && this.form.firstName.length < 150 ? true : false;
+    },
+    lastNameState() {
+      return this.form.lastName.length > 2 && this.form.lastName.length< 150 ? true : false;
+    },
+    passwordState() {
+      const validPassword = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(
+        this.form.password
+      );
+      return validPassword && this.form.password.length > 2 && this.form.password.length < 150 ? true : false;
+    },
   },
   mounted() {
     // Getting data from fake-server
     this.getUserData();
   },
   methods: {
-    // Getting data from fake-server
-    async getUserData() {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      try {
-        this.items = await response.json();
-      } catch (errors) {
-        this.errors = await response.json();
-      }
-    },
-    /* getUserData() {
-      return this.$http({
+    getUserData() {
+      this.$http({
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Token ${localStorage.getItem("token")}`,
           "Content-Type": "application/json; charset=UTF-8",
         },
-        url: `https://test-assignment.emphasoft.com/api/v1/users/`
+        url: `https://test-assignment.emphasoft.com/api/v1/users/`,
       }).then((res) => {
-        console.log(res)
-      })
-    }, */
-
-    // bootstrap method
-
+        this.items = res.data;
+      });
+    },
+    // -------- bootstrap method ------------- //
     info(item, button) {
       this.infoModal.content = item; // заменил JSON на item, т.е. мой объект
       this.id = this.infoModal.content.id; // добавил
       this.username = this.infoModal.content.username; // добавил
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
-    // Create user
+    // ---------- Create user ------------- //
     addUser() {
-      this.items.push({
-        id: this.id,
-        username: this.username,
-      });
-      this.$bvModal.hide("createUser");
+      this.$http({
+        method: "POST",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        url: `https://test-assignment.emphasoft.com/api/v1/users/`,
+        data: {
+          username: this.form.username,
+          first_name: this.form.firstName,
+          last_name: this.form.lastName,
+          password: this.form.password,
+          is_active: true,
+        },
+      })
+        .then((res) => {
+          this.$bvModal.hide("createUser");
+          this.getUserData(); // объявляем для реактивности
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          this.error = err.response.data.password;
+        });
     },
     // Editing user
     editUser(button) {
