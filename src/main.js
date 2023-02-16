@@ -9,7 +9,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.productionTip = false
 
-Vue.prototype.axios = axios;
+Vue.prototype.$http = axios;
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)

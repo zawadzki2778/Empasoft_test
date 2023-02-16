@@ -30,7 +30,6 @@
           class="m-3"
           @click="openTable"
           variant="success"
-          :disabled="nameState && passwordState ? disabled = false : disabled = true"
           >подтвердить</b-button
         >
         <!-- можно забаиндить :disabled="disabledButoon и в computed прописать : 
@@ -52,7 +51,7 @@ export default {
   },
   computed: {
     nameState() {
-     return this.username.length > 2 ? true : false;
+      return this.username.length > 2 ? true : false;
     },
     passwordState() {
       const check = /^\d+$/.test(this.password);
@@ -61,7 +60,25 @@ export default {
   },
   methods: {
     openTable() {
-      return this.$router.push({ name: "UserTable" });
+      return this.$http({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        url: `https://test-assignment.emphasoft.com/api/v1/login/`,
+        data: {
+          username: this.username,
+          password: this.password,
+        },
+      }).then((res) => {
+        if (res.status == 400) {
+          console.log(res.data.non_field_errors)
+        } else {
+          console.log(res);
+          localStorage.setItem('token', res.data.token) // Кладём токен при авторизации  в локольное хранилище
+          this.$router.push({ name: "UserTable" });
+        } 
+      })
     },
   },
 };

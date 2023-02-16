@@ -17,7 +17,6 @@
         >
         <b-modal id="createUser" title="Создание пользователя" hide-footer>
           <b-form-input
-            :id="id"
             :state="idState"
             v-model="id"
             class="mb-2"
@@ -92,8 +91,8 @@ export default {
     return {
       items: [],
       search: "", // Добавил для фильтрации
-      id: "", // для редактирования, что бы менялось по клику на кнопку, а не реактивно в табл.
-      username: "", // ----- `` -----
+      id: "", 
+      username: "", 
       // disabled: true,
       errors: [],
       fields: [
@@ -138,22 +137,14 @@ export default {
       });
       return array;
     },
-    // ====== validation btn ========= //
     idState() {
-      const result = 1;
-      this.items.forEach((item) => {
-        if (item.id.toString() !== this.id) {
-          return true; // nuzno kakto prisvoit result (item ne vidit) i sravnit v return
-        }
-        console.log(this.id);
-      });
-      return this.id.length > 0 && this.id !== result ? true : false;
+      let users = this.items.find(item => item.id == this.id)
+      return users
     },
     usernameState() {
-      return this.username.length > 2 ? true : false;
-    },
+      return this.username.length > 2 ? true : false
+    }
   },
-
   mounted() {
     // Getting data from fake-server
     this.getUserData();
@@ -170,7 +161,21 @@ export default {
         this.errors = await response.json();
       }
     },
+    /* getUserData() {
+      return this.$http({
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        url: `https://test-assignment.emphasoft.com/api/v1/users/`
+      }).then((res) => {
+        console.log(res)
+      })
+    }, */
+
     // bootstrap method
+
     info(item, button) {
       this.infoModal.content = item; // заменил JSON на item, т.е. мой объект
       this.id = this.infoModal.content.id; // добавил
