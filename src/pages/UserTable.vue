@@ -59,6 +59,7 @@
             trim
           ></b-form-input>
           <span>{{ error[0] }}</span>
+          <!-- вывод ошибки от бэка -->
           <b-button
             @click="addUser"
             variant="success"
@@ -104,8 +105,26 @@
       hide-footer
     >
       <!-- Вывожу инпуты в модалке, привязаные к значению из таблицы -->
-      <b-form-input v-model="id" class="mb-2"></b-form-input>
-      <b-form-input v-model="username" class="mb-2"></b-form-input>
+      <b-form-input
+        v-model="form.username"
+        class="mb-2"
+        placeholder="username"
+      ></b-form-input>
+      <b-form-input
+        v-model="form.firstName"
+        class="mb-2"
+        placeholder="введите ваше имя"
+      ></b-form-input>
+      <b-form-input
+        v-model="form.lastName"
+        class="mb-2"
+        placeholder="введите вашу фамилию"
+      ></b-form-input>
+      <b-form-input
+        v-model="form.password"
+        class="mb-2"
+        placeholder="введите пароль"
+      ></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
       <b-button @click="editUser(infoModal.id)" variant="outline-success"
         >Редактировать</b-button
@@ -132,8 +151,10 @@ export default {
       error: "",
       search: "", // Добавил для фильтрации
       id: "",
-      username: "",
-      // disabled: true,
+      // username: "",
+      // firstName: "",
+      // lastName: "",
+      // password: "",
       errors: [],
       fields: [
         {
@@ -173,7 +194,6 @@ export default {
       infoModal: {
         // bootstrap
         id: "info-modal",
-        title: "",
         content: "",
       },
     };
@@ -202,16 +222,24 @@ export default {
       return validUsername && this.form.username.length < 150 ? true : false;
     },
     firstNameState() {
-      return this.form.firstName.length > 2 && this.form.firstName.length < 150 ? true : false;
+      return this.form.firstName.length > 2 && this.form.firstName.length < 150
+        ? true
+        : false;
     },
     lastNameState() {
-      return this.form.lastName.length > 2 && this.form.lastName.length< 150 ? true : false;
+      return this.form.lastName.length > 2 && this.form.lastName.length < 150
+        ? true
+        : false;
     },
     passwordState() {
       const validPassword = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(
         this.form.password
       );
-      return validPassword && this.form.password.length > 2 && this.form.password.length < 150 ? true : false;
+      return validPassword &&
+        this.form.password.length > 2 &&
+        this.form.password.length < 150
+        ? true
+        : false;
     },
   },
   mounted() {
@@ -267,8 +295,10 @@ export default {
     },
     // Editing user
     editUser(button) {
-      this.infoModal.content.id = this.id;
-      this.infoModal.content.username = this.username;
+      this.infoModal.content.username = this.form.username;
+      this.infoModal.content.firstName = this.form.firstName;
+      this.infoModal.content.lastName = this.form.lastName;
+      this.infoModal.content.password = this.form.password;
       this.$bvModal.hide(button); // добавили закрытие модалки по ID
     },
     // bootstrap method
