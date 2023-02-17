@@ -1,5 +1,5 @@
 <template>
-  <b-container class="col-lg-12 col-md-8 col-sm-8" fluid>
+  <b-container fluid>
     <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
     <!-- ======= user creating ======== -->
     <div class="d-flex justify-content-center flex-wrap">
@@ -58,8 +58,9 @@
             aria-describedby="input-live-help input-live-password"
             trim
           ></b-form-input>
-          <span>{{ error[0] }}</span>
           <!-- вывод ошибки от бэка -->
+          <span>{{ error[0] }}</span>
+
           <b-button
             @click="addUser"
             variant="success"
@@ -86,18 +87,22 @@
       show-empty
       small
     >
+    <!-- edding and delete --> 
       <template #cell(actions)="row">
         <b-button
           size="sm"
           @click="info(row.item, $event.target)"
-          class="mr-1"
+          class="mr-4"
           variant="link"
         >
           Редактировать
         </b-button>
+        <b-button @click="deleteUser(row.item)" class="mr-1" variant="link"
+          >Удалить</b-button
+        >
       </template>
     </b-table>
-    <!-- =======  editing user ======== -->
+    <!-- =======  editing user in modal ======== -->
     <b-modal
       :id="infoModal.id"
       title="Редактировать"
@@ -106,30 +111,29 @@
     >
       <!-- Вывожу инпуты в модалке, привязаные к значению из таблицы -->
       <b-form-input
-        v-model="form.username"
+        v-model="infoModal.content.username"
         class="mb-2"
         placeholder="username"
       ></b-form-input>
       <b-form-input
-        v-model="form.firstName"
+        v-model="infoModal.content.first_name"
         class="mb-2"
         placeholder="введите ваше имя"
       ></b-form-input>
       <b-form-input
-        v-model="form.lastName"
+        v-model="infoModal.content.last_name"
         class="mb-2"
         placeholder="введите вашу фамилию"
-      ></b-form-input>
-      <b-form-input
-        v-model="form.password"
-        class="mb-2"
-        placeholder="введите пароль"
       ></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
       <b-button @click="editUser(infoModal.id)" variant="outline-success"
         >Редактировать</b-button
       >
     </b-modal>
+
+    <!-- =======  delete user ======== -->
+
+    <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
   </b-container>
 </template>
 
@@ -151,17 +155,12 @@ export default {
       error: "",
       search: "", // Добавил для фильтрации
       id: "",
-      // username: "",
-      // firstName: "",
-      // lastName: "",
-      // password: "",
       errors: [],
       fields: [
         {
           key: "id",
           label: "ID",
           sortable: true,
-          class: "text-center",
         },
         {
           key: "username",
@@ -185,7 +184,7 @@ export default {
         },
         {
           key: "actions",
-          label: "EDIT",
+          label: "",
         },
       ],
       sortBy: "", // bootstrap
@@ -296,10 +295,22 @@ export default {
     // Editing user
     editUser(button) {
       this.infoModal.content.username = this.form.username;
-      this.infoModal.content.firstName = this.form.firstName;
-      this.infoModal.content.lastName = this.form.lastName;
-      this.infoModal.content.password = this.form.password;
+      this.infoModal.content.first_name = this.form.firstName;
+      this.infoModal.content.last_name = this.form.lastName;
+      this.infoModal.content.is_active = this.form.password;
       this.$bvModal.hide(button); // добавили закрытие модалки по ID
+    },
+    deleteUser(item) {
+      this.$http({
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        url: `https://test-assignment.emphasoft.com/api/v1/users/${item.id}`, // т.к. в запросе от бэка указан ID
+      }).then(() => {
+        this.getUserData()
+      });
     },
     // bootstrap method
     resetInfoModal() {
