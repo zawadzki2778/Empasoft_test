@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
-    <!-- ======= user creating ======== -->
+    <!-- ==============  user creating ============== -->
     <div class="d-flex justify-content-center flex-wrap">
       <SearchUser :value="search" @search="search = $event" />
       <div class="text-center">
@@ -23,9 +23,7 @@
             aria-describedby="input-live-help input-live-id"
             trim
           ></b-form-input> -->
-          <!-- <b-form-invalid-feedback id="input-live-id">
-            id совпадают
-          </b-form-invalid-feedback> -->
+          <label>имя пользователя</label>
           <b-form-input
             :state="usernameState"
             v-model="form.username"
@@ -34,6 +32,10 @@
             aria-describedby="input-live-help input-live-username"
             trim
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-username">
+            от 3 до 150 символов
+          </b-form-invalid-feedback>
+          <label class="mt-2 text-left">имя</label>
           <b-form-input
             :state="firstNameState"
             v-model="form.firstName"
@@ -42,6 +44,10 @@
             aria-describedby="input-live-help input-live-firstName"
             trim
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-username">
+            от 3 до 150 символов
+          </b-form-invalid-feedback>
+          <label class="mt-2 text-left">фамилия</label>
           <b-form-input
             :state="lastNameState"
             v-model="form.lastName"
@@ -50,6 +56,10 @@
             aria-describedby="input-live-help input-live-lastName"
             trim
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-username">
+            от 3 до 150 символов
+          </b-form-invalid-feedback>
+          <label class="mt-2 text-left">пароль</label>
           <b-form-input
             :state="passwordState"
             v-model="form.password"
@@ -58,10 +68,13 @@
             aria-describedby="input-live-help input-live-password"
             trim
           ></b-form-input>
+          <b-form-invalid-feedback id="input-live-password">
+            от 3 до 128 символов
+          </b-form-invalid-feedback>
           <!-- вывод ошибки от бэка -->
-          <span>{{ error[0] }}</span>
-
+          <!-- <span>{{ error[0] }}</span> -->
           <b-button
+            class="m-2"
             @click="addUser"
             variant="success"
             :disabled="
@@ -87,7 +100,7 @@
       show-empty
       small
     >
-      <!-- edding and delete -->
+      <!-- ========== eddit and delete ========= -->
       <template #cell(actions)="row">
         <b-button
           size="sm"
@@ -97,7 +110,7 @@
         >
           Редактировать
         </b-button>
-        <b-button @click="deleteUser(row.item)" class="mr-1" variant="link"
+        <b-button size="sm" @click="deleteUser(row.item)" variant="link"
           >Удалить</b-button
         >
       </template>
@@ -109,31 +122,34 @@
       @hide="resetInfoModal"
       hide-footer
     >
-      <!-- Вывожу инпуты в модалке, привязаные к значению из таблицы -->
+      <label>имя пользователя</label>
       <b-form-input
         v-model="infoModal.content.username"
         class="mb-2"
         placeholder="username"
+        aria-describedby="input-live-help input-live-username"
+        trim
       ></b-form-input>
+      <label class="mt-2 text-left">имя</label>
       <b-form-input
         v-model="infoModal.content.first_name"
         class="mb-2"
-        placeholder="введите ваше имя"
+        placeholder="имя"
       ></b-form-input>
+      <label class="mt-2 text-left">фамилия</label>
       <b-form-input
         v-model="infoModal.content.last_name"
         class="mb-2"
-        placeholder="введите вашу фамилию"
+        placeholder="фамилия"
       ></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
-      <b-button @click="editUser(infoModal.content.id)" variant="outline-success"
+      <b-button
+        class="m-2"
+        @click="editUser(infoModal.content.id)"
+        variant="success"
         >Редактировать</b-button
       >
     </b-modal>
-
-    <!-- =======  delete user ======== -->
-
-    <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
   </b-container>
 </template>
 
@@ -198,7 +214,7 @@ export default {
     };
   },
   computed: {
-    // ====== My filtration ======= //
+    // ============ My filtration ========== //
     itemsFilter() {
       let array = this.items,
         search = this.search;
@@ -216,9 +232,14 @@ export default {
     //   let userId = this.tems.find((item) => item.id === this.id);
     //   return userId === undefined ? false : true;
     // },
+    // ============ Validation ============== //
     usernameState() {
       const validUsername = /^[\w.@+-]+$/.test(this.form.username);
-      return validUsername && this.form.username.length < 150 ? true : false;
+      return validUsername &&
+        this.form.username.length > 2 &&
+        this.form.username.length < 150
+        ? true
+        : false;
     },
     firstNameState() {
       return this.form.firstName.length > 2 && this.form.firstName.length < 150
@@ -236,13 +257,12 @@ export default {
       );
       return validPassword &&
         this.form.password.length > 2 &&
-        this.form.password.length < 150
+        this.form.password.length < 128
         ? true
         : false;
     },
   },
   mounted() {
-    // Getting data from fake-server
     this.getUserData();
   },
   methods: {
@@ -258,14 +278,14 @@ export default {
         this.items = res.data;
       });
     },
-    // -------- bootstrap method ------------- //
+    // ========== bootstrap method =============== //
     info(item, button) {
       this.infoModal.content = item; // заменил JSON на item, т.е. мой объект
       this.id = this.infoModal.content.id; // добавил
       this.username = this.infoModal.content.username; // добавил
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
-    // ---------- Create user ------------- //
+    // =============== Create user =============== //
     addUser() {
       this.$http({
         method: "POST",
@@ -289,10 +309,9 @@ export default {
         })
         .catch((err) => {
           console.log(err.response.data);
-          this.error = err.response.data.password;
         });
     },
-    // Editing user
+    // ============== Edit user ============== //
     editUser(item) {
       this.$http({
         method: "PUT",
@@ -316,15 +335,10 @@ export default {
         })
         .catch((err) => {
           console.log(err.response.data);
-          // this.error = err.response.data.password;
+          // this.error = err.response.data.;
         });
-
-      // this.infoModal.content.username = this.form.username;
-      // this.infoModal.content.first_name = this.form.firstName;
-      // this.infoModal.content.last_name = this.form.lastName;
-      // this.infoModal.content.is_active = this.form.password;
-      // this.$bvModal.hide(button); // добавили закрытие модалки по ID
     },
+    // ==================== Delete user =================== //
     deleteUser(item) {
       this.$http({
         method: "DELETE",
@@ -337,7 +351,7 @@ export default {
         this.getUserData();
       });
     },
-    // bootstrap method
+    // =========== bootstrap method ============== //
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";

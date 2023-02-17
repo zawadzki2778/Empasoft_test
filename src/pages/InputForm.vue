@@ -11,7 +11,7 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-feedback">
-        введите не менее 3 символов
+        от 3 до 150 символов
       </b-form-invalid-feedback>
       <label class="mt-2 text-left">пароль</label>
       <b-form-input
@@ -23,16 +23,20 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-password">
+        от 3 до 128 символов
       </b-form-invalid-feedback>
+      <!-- <span>{{ error[0] }}</span> -->
       <div class="text-center">
         <b-button
           class="m-3"
           @click="openTable"
           variant="success"
-          :disabled="nameState && passwordState ? (disabled = false) : (disabled = true)"
+          :disabled="
+            nameState && passwordState ? (disabled = false) : (disabled = true)
+          "
           >подтвердить</b-button
         >
-        <!-- можно забаиндить :disabled="disabledButoon и в computed прописать : 
+        <!-- можно забаиндить :disabled="disabledButoon и в computed прописать метод: 
         return this.nameState && this.passwordState ? false : true -->
       </div>
     </b-container>
@@ -52,11 +56,19 @@ export default {
   computed: {
     nameState() {
       const validUsername = /^[\w.@+-]+$/.test(this.username);
-      return validUsername && this.username.length < 150 ? true : false;
+      return validUsername &&
+        this.username.length > 2 &&
+        this.username.length < 150
+        ? true
+        : false;
     },
     passwordState() {
       const validPassword = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(this.password);
-      return validPassword && this.username.length < 150 ? true : false;
+      return validPassword &&
+        this.username.length > 2 &&
+        this.username.length < 150
+        ? true
+        : false;
     },
   },
   methods: {
@@ -71,15 +83,20 @@ export default {
           username: this.username,
           password: this.password,
         },
-      }).then((res) => {
-        if (res.status == 400) {
-          console.log(res.data.non_field_errors);
-        } else {
-          console.log(res);
-          localStorage.setItem("token", res.data.token); // Кладём токен при авторизации  в локольное хранилище
-          this.$router.push({ name: "UserTable" });
-        }
-      });
+      })
+        .then((res) => {
+          if (res.status == 400) {
+            // console.log(res.data.non_field_errors);
+          } else {
+            console.log(res);
+            localStorage.setItem("token", res.data.token); // Кладём токен при авторизации  в локольное хранилище
+            this.$router.push({ name: "UserTable" });
+          }
+        })
+        // .catch((err) => {
+        //   console.log(err.response.data);
+        //   this.error = err.response.data.username;
+        // });
     },
   },
 };

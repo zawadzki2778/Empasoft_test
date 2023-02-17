@@ -1,6 +1,5 @@
 <template>
-  <div class="search col-md-8 col-sm-12">   
-    <!-- Search input -->
+  <div class="search col-md-6 col-sm-12">   
     <b-form-input
       class="input-search" 
       placeholder="Search username"
