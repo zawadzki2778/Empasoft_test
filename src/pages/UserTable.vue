@@ -87,7 +87,7 @@
       show-empty
       small
     >
-    <!-- edding and delete --> 
+      <!-- edding and delete -->
       <template #cell(actions)="row">
         <b-button
           size="sm"
@@ -126,7 +126,7 @@
         placeholder="введите вашу фамилию"
       ></b-form-input>
       <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
-      <b-button @click="editUser(infoModal.id)" variant="outline-success"
+      <b-button @click="editUser(infoModal.content.id)" variant="outline-success"
         >Редактировать</b-button
       >
     </b-modal>
@@ -293,12 +293,37 @@ export default {
         });
     },
     // Editing user
-    editUser(button) {
-      this.infoModal.content.username = this.form.username;
-      this.infoModal.content.first_name = this.form.firstName;
-      this.infoModal.content.last_name = this.form.lastName;
-      this.infoModal.content.is_active = this.form.password;
-      this.$bvModal.hide(button); // добавили закрытие модалки по ID
+    editUser(item) {
+      this.$http({
+        method: "PUT",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        url: `https://test-assignment.emphasoft.com/api/v1/users/${item}`,
+        data: {
+          username: this.infoModal.content.username,
+          first_name: this.infoModal.content.first_name,
+          last_name: this.infoModal.content.last_name,
+          password: "5OD3h/ZD}7T0!'K}|%1b!CSl[iAqO",
+          is_active: true,
+        },
+      })
+        .then((res) => {
+          this.$bvModal.hide("info-modal");
+          this.getUserData(); // объявляем для реактивности
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          // this.error = err.response.data.password;
+        });
+
+      // this.infoModal.content.username = this.form.username;
+      // this.infoModal.content.first_name = this.form.firstName;
+      // this.infoModal.content.last_name = this.form.lastName;
+      // this.infoModal.content.is_active = this.form.password;
+      // this.$bvModal.hide(button); // добавили закрытие модалки по ID
     },
     deleteUser(item) {
       this.$http({
@@ -309,7 +334,7 @@ export default {
         },
         url: `https://test-assignment.emphasoft.com/api/v1/users/${item.id}`, // т.к. в запросе от бэка указан ID
       }).then(() => {
-        this.getUserData()
+        this.getUserData();
       });
     },
     // bootstrap method
