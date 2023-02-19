@@ -33,7 +33,7 @@
             trim
           ></b-form-input>
           <b-form-invalid-feedback id="input-live-username">
-            от 3 до 150 символов
+            только латинские буквы, от 3 до 150 символов
           </b-form-invalid-feedback>
           <label class="mt-2 text-left">имя</label>
           <b-form-input
@@ -69,7 +69,8 @@
             trim
           ></b-form-input>
           <b-form-invalid-feedback id="input-live-password">
-            от 3 до 128 символов
+            только латинские буквы, от 8 до 128 символов, 1 цифра, 1 заглавнвя
+            буква
           </b-form-invalid-feedback>
           <!-- вывод ошибки от бэка -->
           <!-- <span>{{ error[0] }}</span> -->
@@ -256,7 +257,7 @@ export default {
         this.form.password
       );
       return validPassword &&
-        this.form.password.length > 2 &&
+        this.form.password.length > 8 &&
         this.form.password.length < 128
         ? true
         : false;
@@ -304,7 +305,12 @@ export default {
       })
         .then((res) => {
           this.$bvModal.hide("createUser");
-          this.getUserData(); // объявляем для реактивности
+          (this.form.username =
+            this.form.firstName =
+            this.form.lastName =
+            this.form.password =
+              ""), // очищаем инпуты
+            this.getUserData(); // объявляем для реактивности
           console.log(res);
         })
         .catch((err) => {
