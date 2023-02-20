@@ -97,23 +97,26 @@
       :items="itemsFilter"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
+      sort-icon-left
       stacked="md"
       show-empty
       small
     >
       <!-- ========== eddit and delete ========= -->
       <template #cell(actions)="row">
-        <b-button
-          size="sm"
-          @click="info(row.item, $event.target)"
-          class="mr-4"
-          variant="link"
-        >
-          Редактировать
-        </b-button>
-        <b-button size="sm" @click="deleteUser(row.item)" variant="link"
-          >Удалить</b-button
-        >
+        <div class="links">
+          <b-button
+            size="sm"
+            @click="info(row.item, $event.target)"
+            class="mr-4"
+            variant="link"
+          >
+            Редактировать
+          </b-button>
+          <b-button size="sm" @click="deleteUser(row.item)" variant="link"
+            >Удалить</b-button
+          >
+        </div>
       </template>
     </b-table>
     <!-- =======  editing user in modal ======== -->
@@ -182,33 +185,31 @@ export default {
         {
           key: "username",
           label: "USERNAME",
-          sortable: false,
         },
         {
           key: "first_name",
           label: "FIRST NAME",
-          sortable: false,
         },
         {
           key: "last_name",
           label: "LAST NAME",
-          sortable: false,
         },
         {
           key: "is_active",
           label: "ACTIVE",
-          sortable: false,
+          formatter: (value) => {
+            return value ? "Yes" : "No";
+          },
         },
         {
           key: "actions",
           label: "",
         },
       ],
-      sortBy: "", // bootstrap
-      sortDesc: false, // bootstrap
-      filter: null, // bootstrap
+      sortBy: "",
+      sortDesc: false, 
+      filter: null,
       infoModal: {
-        // bootstrap
         id: "info-modal",
         content: "",
       },
@@ -277,6 +278,7 @@ export default {
         url: `https://test-assignment.emphasoft.com/api/v1/users/`,
       }).then((res) => {
         this.items = res.data;
+        console.log(res.data); // ********************************************************************* //
       });
     },
     // ========== bootstrap method =============== //
@@ -300,7 +302,7 @@ export default {
           first_name: this.form.firstName,
           last_name: this.form.lastName,
           password: this.form.password,
-          is_active: true,
+          is_active: this.form.isActive, // ************************************************ //
         },
       })
         .then((res) => {
@@ -331,7 +333,7 @@ export default {
           first_name: this.infoModal.content.first_name,
           last_name: this.infoModal.content.last_name,
           password: "5OD3h/ZD}7T0!'K}|%1b!CSl[iAqO",
-          is_active: true,
+          is_active: this.infoModal.content.is_active, // ******************************************** //
         },
       })
         .then((res) => {
@@ -390,6 +392,21 @@ label {
 }
 .table {
   background-color: white;
-  border-radius: 5px;
+}
+button.m-2 {
+  width: 50%;
+}
+.links {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+/* @media (max-width: 321px) {
+  .table.b-table.b-table-stacked-md {
+    font-size: 14px;
+  }
+} */
+.data-label {
+  font-size: 10px;
 }
 </style>

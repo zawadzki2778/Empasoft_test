@@ -11,7 +11,7 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-feedback">
-        от 3 до 150 символов
+        только латинские буквы, от 3 до 150 символов
       </b-form-invalid-feedback>
       <label class="mt-2 text-left">пароль</label>
       <b-form-input
@@ -23,7 +23,7 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-password">
-        от 3 до 128 символов
+        только латинские буквы, от 8 до 128 символов, 1 цифра, 1 заглавнвя буква
       </b-form-invalid-feedback>
       <!-- <span>{{ error[0] }}</span> -->
       <div class="text-center">
@@ -65,7 +65,7 @@ export default {
     passwordState() {
       const validPassword = /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(this.password);
       return validPassword &&
-        this.username.length > 2 &&
+        this.username.length > 8 &&
         this.username.length < 150
         ? true
         : false;
@@ -85,18 +85,13 @@ export default {
         },
       })
         .then((res) => {
-          if (res.status == 400) {
-            // console.log(res.data.non_field_errors);
-          } else {
-            console.log(res);
-            localStorage.setItem("token", res.data.token); // Кладём токен при авторизации  в локольное хранилище
-            this.$router.push({ name: "UserTable" });
-          }
+          localStorage.setItem("token", res.data.token); // Кладём токен при авторизации  в локольное хранилище
+          this.$router.push({ name: "UserTable" });
         })
-        // .catch((err) => {
-        //   console.log(err.response.data);
-        //   this.error = err.response.data.username;
-        // });
+        .catch((err) => {
+          console.log(err.response.data);
+          this.error = err.response.data.username;
+        });
     },
   },
 };
@@ -111,6 +106,9 @@ export default {
 }
 h3 {
   font-weight: 600;
+}
+label {
+  color: #007bff;
 }
 @media (max-width: 380px) {
   h3 {
