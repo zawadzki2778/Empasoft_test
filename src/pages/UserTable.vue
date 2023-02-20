@@ -1,28 +1,19 @@
 <template>
   <b-container fluid>
     <h3 class="text-center p-3">СПИСОК ПОЛЬЗОВАТЕЛЕЙ</h3>
-    <!-- ==============  user creating ============== -->
+    <!-- =================  user creating ================== -->
     <div class="d-flex justify-content-center flex-wrap">
       <SearchUser :value="search" @search="search = $event" />
       <div class="text-center">
         <b-button
           lg="4"
-          class="plr-2"
+          class="plr-2 mb-3"
           pill
-          variant="outline-primary"
+          variant="primary"
           @click="openCreateModal"
           >Создать пользователя</b-button
         >
         <b-modal id="createUser" title="Создание пользователя" hide-footer>
-          <!-- <b-form-input
-            type="number"
-            :state="idState"
-            v-model="id"
-            class="mb-2"
-            placeholder="Введите ваш ID"
-            aria-describedby="input-live-help input-live-id"
-            trim
-          ></b-form-input> -->
           <label>имя пользователя</label>
           <b-form-input
             :state="usernameState"
@@ -72,8 +63,6 @@
             только латинские буквы, от 8 до 128 символов, 1 цифра, 1 заглавнвя
             буква
           </b-form-invalid-feedback>
-          <!-- вывод ошибки от бэка -->
-          <!-- <span>{{ error[0] }}</span> -->
           <b-button
             class="m-2"
             @click="addUser"
@@ -91,7 +80,7 @@
 
     <!-- Main table element -->
     <b-table
-      class="mt-3"
+      class="stats_table"
       :fields="fields"
       :filter="filter"
       :items="itemsFilter"
@@ -102,9 +91,9 @@
       show-empty
       small
     >
-      <!-- ========== eddit and delete ========= -->
+      <!-- ============== eddit and delete ============ -->
       <template #cell(actions)="row">
-        <div class="links">
+        <div>
           <b-button
             size="sm"
             @click="info(row.item, $event.target)"
@@ -119,7 +108,7 @@
         </div>
       </template>
     </b-table>
-    <!-- =======  editing user in modal ======== -->
+    <!-- ===========  editing user in modal ============= -->
     <b-modal
       :id="infoModal.id"
       title="Редактировать"
@@ -146,7 +135,7 @@
         class="mb-2"
         placeholder="фамилия"
       ></b-form-input>
-      <!-- Добавили свою кнопку + метод на сохранение данных при редактировании -->
+      <!-- Добавил свою кнопку + метод на сохранение данных при редактировании -->
       <b-button
         class="m-2"
         @click="editUser(infoModal.content.id)"
@@ -173,7 +162,7 @@ export default {
         isActive: true,
       },
       error: "",
-      search: "", // Добавил для фильтрации
+      search: "",
       id: "",
       errors: [],
       fields: [
@@ -181,33 +170,45 @@ export default {
           key: "id",
           label: "ID",
           sortable: true,
+          thClass: "moko moko-title", // th меняю для заголовков
+          tdClass: "foo", // td меняю для тела таблицы
         },
         {
           key: "username",
           label: "USERNAME",
+          thClass: "moko moko-title",
+          tdClass: "foo",
         },
         {
           key: "first_name",
           label: "FIRST NAME",
+          thClass: "moko moko-title",
+          tdClass: "foo",
         },
         {
           key: "last_name",
           label: "LAST NAME",
+          thClass: "moko moko-title",
+          tdClass: "foo",
         },
         {
           key: "is_active",
           label: "ACTIVE",
+          thClass: "moko moko-title",
+          tdClass: "foo",
           formatter: (value) => {
             return value ? "Yes" : "No";
           },
         },
         {
           key: "actions",
-          label: "",
+          label: "ACTIONS",
+          thClass: "moko moko-title",
+          tdClass: "actions",
         },
       ],
       sortBy: "",
-      sortDesc: false, 
+      sortDesc: false,
       filter: null,
       infoModal: {
         id: "info-modal",
@@ -229,11 +230,6 @@ export default {
       });
       return array;
     },
-    // idState() {
-    //   //написал медот для проверки на уникальность по ID
-    //   let userId = this.tems.find((item) => item.id === this.id);
-    //   return userId === undefined ? false : true;
-    // },
     // ============ Validation ============== //
     usernameState() {
       const validUsername = /^[\w.@+-]+$/.test(this.form.username);
@@ -365,7 +361,7 @@ export default {
       this.infoModal.content = "";
     },
     openCreateModal() {
-      this.$bvModal.show("createUser"); // открываем
+      this.$bvModal.show("createUser"); // открываем модалку 
       this.id = this.username = ""; // очищаем инпуты
     },
   },
@@ -398,14 +394,9 @@ button.m-2 {
 }
 .links {
   display: flex;
-  justify-content: space-around;
+  justify-content: start;
   flex-wrap: wrap;
 }
-/* @media (max-width: 321px) {
-  .table.b-table.b-table-stacked-md {
-    font-size: 14px;
-  }
-} */
 .data-label {
   font-size: 10px;
 }

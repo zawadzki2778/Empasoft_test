@@ -25,7 +25,7 @@
       <b-form-invalid-feedback id="input-live-password">
         только латинские буквы, от 8 до 128 символов, 1 цифра, 1 заглавнвя буква
       </b-form-invalid-feedback>
-      <!-- <span>{{ error[0] }}</span> -->
+
       <div class="text-center">
         <b-button
           class="m-3"
@@ -40,6 +40,15 @@
         return this.nameState && this.passwordState ? false : true -->
       </div>
     </b-container>
+    <b-modal id="error-modal" title="ERROR!" hide-footer>
+      <p class="my-4 text-danger">{{ error[0] }}</p>
+      <b-button
+        class="mt-2"
+        @click="$bvModal.hide('error-modal')" 
+        variant="success"
+        >Close</b-button
+      >
+    </b-modal>
   </div>
 </template>
 
@@ -50,6 +59,7 @@ export default {
     return {
       username: "",
       password: "",
+      error: "",
       disabled: true,
     };
   },
@@ -89,8 +99,8 @@ export default {
           this.$router.push({ name: "UserTable" });
         })
         .catch((err) => {
-          console.log(err.response.data);
-          this.error = err.response.data.username;
+          this.error = err.response.data.non_field_errors;
+          this.$bvModal.show("error-modal"); // открываем модалку по id
         });
     },
   },

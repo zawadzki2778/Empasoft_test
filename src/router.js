@@ -16,6 +16,6 @@ const routes = [
 ];
 
 export default new VueRouter({
-    mode: "history", //чтобы маршруты работали через слэши //
+    mode: "history",
     routes,
 });
